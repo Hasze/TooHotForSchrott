@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShareWear - Gemeinsam Helfen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-stone-50 flex flex-col min-h-screen font-sans text-gray-800">
+
+    <header class="bg-emerald-700 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span class="text-xl font-bold tracking-tight">ShareWear</span>
+            </div>
+            <nav class="hidden md:block">
+                <ul class="flex space-x-6 text-sm font-medium">
+                    <li><a href="#" class="hover:text-emerald-200 transition">Portal</a></li>
+                    <li><a href="#" class="hover:text-emerald-200 transition">Krisengebiete</a></li>
+                    <li><a href="#" class="hover:text-emerald-200 transition">Über uns</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-10">
+        
+        <div id="form-card" class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div class="bg-emerald-600 p-6 text-white text-center">
+                <h1 class="text-2xl font-bold">Kleiderspende registrieren</h1>
+                <p class="text-emerald-100 mt-1">Helfen Sie dort, wo es am dringendsten gebraucht wird.</p>
+            </div>
+            
+            <form id="donationForm" class="p-8 space-y-6">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Wie erfolgt die Spende?</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer hover:bg-emerald-50 transition border-emerald-500 bg-emerald-50" id="label-office">
+                            <input type="radio" name="type" value="office" class="hidden" checked onchange="handleTypeChange()">
+                            <span class="text-sm font-medium">Geschäftsstelle</span>
+                        </label>
+                        <label class="flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer hover:bg-emerald-50 transition border-gray-200" id="label-pickup">
+                            <input type="radio" name="type" value="pickup" class="hidden" onchange="handleTypeChange()">
+                            <span class="text-sm font-medium">Abholung</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="addressBox" class="hidden space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                    <p class="text-xs font-bold text-emerald-700 uppercase">Abholadresse</p>
+                    <input type="text" id="street" placeholder="Straße & Hausnummer" class="w-full border-gray-300 rounded-lg p-2.5 focus:ring-emerald-500 focus:border-emerald-500 border">
+                    <input type="text" id="plz" placeholder="Postleitzahl (z.B. 12345)" class="w-full border-gray-300 rounded-lg p-2.5 focus:ring-emerald-500 focus:border-emerald-500 border">
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1 text">Was spenden Sie?</label>
+                        <input type="text" id="clothes" placeholder="z.B. 2 Sack Winterkleidung" class="w-full border-gray-300 rounded-lg p-2.5 border focus:ring-emerald-500 focus:border-emerald-500" required>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Krisenregion wählen</label>
+                        <select id="crisis" class="w-full border-gray-300 rounded-lg p-2.5 border focus:ring-emerald-500 focus:border-emerald-500">
+                            <option>Nordsyrien (Erdbebenhilfe)</option>
+                            <option>Süd-Sudan (Dürrehilfe)</option>
+                            <option>Ukraine (Kältehilfe)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="button" onclick="processRegistration()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition duration-200 transform hover:-translate-y-0.5">
+                    Registrierung abschließen
+                </button>
+            </form>
+        </div>
+
+        <div id="success-card" class="hidden max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-10 text-center border-t-8 border-emerald-500">
+            <div class="mb-4 inline-flex items-center justify-center w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">Vielen Dank!</h2>
+            <p class="text-gray-500 mb-8">Ihre Registrierung wurde erfolgreich gespeichert.</p>
+            
+            <div id="result-details" class="bg-emerald-50 rounded-xl p-6 text-left space-y-3 border border-emerald-100">
+                </div>
+
+            <button onclick="location.reload()" class="mt-8 text-emerald-600 font-semibold hover:text-emerald-800">
+                &larr; Neue Registrierung starten
+            </button>
+        </div>
+    </main>
+
+    <footer class="bg-gray-900 text-gray-400 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-sm">&copy; 2026 ShareWear e.V. – Gemeinsam für eine bessere Welt.</p>
+            <div class="mt-4 space-x-4 text-xs">
+                <a href="#" class="hover:text-white">Impressum</a>
+                <a href="#" class="hover:text-white">Datenschutz</a>
+                <a href="#" class="hover:text-white">Rechtliche Hinweise</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function handleTypeChange() {
+            const isPickup = document.querySelector('input[name="type"]:checked').value === 'pickup';
+            document.getElementById('addressBox').classList.toggle('hidden', !isPickup);
+            
+            // Optisches Feedback der Buttons
+            document.getElementById('label-pickup').classList.toggle('border-emerald-500', isPickup);
+            document.getElementById('label-pickup').classList.toggle('bg-emerald-50', isPickup);
+            document.getElementById('label-office').classList.toggle('border-emerald-500', !isPickup);
+            document.getElementById('label-office').classList.toggle('bg-emerald-50', !isPickup);
+        }
+
+        function processRegistration() {
+            const typeValue = document.querySelector('input[name="type"]:checked').value;
+            const clothes = document.getElementById('clothes').value;
+            const crisis = document.getElementById('crisis').value;
+            const plz = document.getElementById('plz').value;
+            const officePLZPrefix = "12"; // Die "Nähe" Definition laut Aufgabe (h)
+
+            if(!clothes) { alert("Bitte geben Sie die Art der Kleidung an."); return; }
+
+            // Prüfung Anforderung (h)
+            if (typeValue === 'pickup') {
+                if (!plz.startsWith(officePLZPrefix)) {
+                    alert("Abholung nicht möglich: Die PLZ muss für unseren Abholservice mit " + officePLZPrefix + " beginnen.");
+                    return;
+                }
+            }
+
+            // Erfolgseite anzeigen (Anforderung i)
+            document.getElementById('form-card').classList.add('hidden');
+            document.getElementById('success-card').classList.remove('hidden');
+
+            const now = new Date();
+            const locationText = typeValue === 'office' ? 'Geschäftsstelle (Persönliche Übergabe)' : 'Abholadresse (' + plz + ')';
+
+            document.getElementById('result-details').innerHTML = `
+                <p><strong>Art der Kleider:</strong> ${clothes}</p>
+                <p><strong>Ziel-Region:</strong> ${crisis}</p>
+                <p><strong>Ort:</strong> ${locationText}</p>
+                <p><strong>Datum:</strong> ${now.toLocaleDateString('de-DE')}</p>
+                <p><strong>Uhrzeit:</strong> ${now.toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'})} Uhr</p>
+            `;
+        }
+    </script>
+</body>
+</html>
