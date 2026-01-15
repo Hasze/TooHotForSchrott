@@ -8,9 +8,9 @@
 </head>
 <body class="bg-stone-50 flex flex-col min-h-screen font-sans text-gray-800">
 
-    <header class="bg-emerald-700 text-white shadow-lg">
+    <header class="bg-emerald-700 text-white shadow-lg sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center space-x-2 cursor-pointer" onclick="showPage('portal')">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
@@ -18,8 +18,8 @@
             </div>
             <nav class="hidden md:block">
                 <ul class="flex space-x-6 text-sm font-medium">
-                    <li><a href="#" class="hover:text-emerald-200 transition">Portal</a></li>
-                    <li><a href="#" class="hover:text-emerald-200 transition">Krisengebiete</a></li>
+                    <li><a href="#" onclick="showPage('portal')" class="hover:text-emerald-200 transition">Portal</a></li>
+                    <li><a href="#" onclick="showPage('crisis')" class="hover:text-emerald-200 transition">Krisengebiete</a></li>
                     <li><a href="#" class="hover:text-emerald-200 transition">Über uns</a></li>
                 </ul>
             </nav>
@@ -28,72 +28,133 @@
 
     <main class="flex-grow container mx-auto px-4 py-10">
         
-        <div id="form-card" class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
-            <div class="bg-emerald-600 p-6 text-white text-center">
-                <h1 class="text-2xl font-bold">Kleiderspende registrieren</h1>
-                <p class="text-emerald-100 mt-1">Helfen Sie dort, wo es am dringendsten gebraucht wird.</p>
+        <div id="portal-page">
+            <div id="form-card" class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="bg-emerald-600 p-6 text-white text-center">
+                    <h1 class="text-2xl font-bold">Kleiderspende registrieren</h1>
+                    <p class="text-emerald-100 mt-1">Helfen Sie dort, wo es am dringendsten gebraucht wird.</p>
+                </div>
+                
+                <form id="donationForm" class="p-8 space-y-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Wie erfolgt die Spende?</label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <label class="flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer hover:bg-emerald-50 transition border-emerald-500 bg-emerald-50" id="label-office">
+                                <input type="radio" name="type" value="office" class="hidden" checked onchange="handleTypeChange()">
+                                <span class="text-sm font-medium">Geschäftsstelle</span>
+                            </label>
+                            <label class="flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer hover:bg-emerald-50 transition border-gray-200" id="label-pickup">
+                                <input type="radio" name="type" value="pickup" class="hidden" onchange="handleTypeChange()">
+                                <span class="text-sm font-medium">Abholung</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="addressBox" class="hidden space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                        <p class="text-xs font-bold text-emerald-700 uppercase">Abholadresse</p>
+                        <input type="text" id="street" placeholder="Straße & Hausnummer" class="w-full border-gray-300 rounded-lg p-2.5 focus:ring-emerald-500 focus:border-emerald-500 border">
+                        <input type="text" id="plz" placeholder="Postleitzahl (z.B. 12345)" class="w-full border-gray-300 rounded-lg p-2.5 focus:ring-emerald-500 focus:border-emerald-500 border">
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1 text">Was spenden Sie?</label>
+                            <input type="text" id="clothes" placeholder="z.B. 2 Sack Winterkleidung" class="w-full border-gray-300 rounded-lg p-2.5 border focus:ring-emerald-500 focus:border-emerald-500" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Krisenregion wählen</label>
+                            <select id="crisis" class="w-full border-gray-300 rounded-lg p-2.5 border focus:ring-emerald-500 focus:border-emerald-500">
+                                <option>Deutschland, Berlin (Stromausfallhilfe)</option>
+                                <option>Kosovo (Überschwemmungshilfe)</option>
+                                <option>Nordsyrien (Erdbebenhilfe)</option>
+                                <option>Süd-Sudan (Dürrehilfe)</option>
+                                <option>Ukraine (Kältehilfe)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="processRegistration()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition duration-200 transform hover:-translate-y-0.5">
+                        Registrierung abschließen
+                    </button>
+                </form>
             </div>
-            
-            <form id="donationForm" class="p-8 space-y-6">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Wie erfolgt die Spende?</label>
-                    <div class="grid grid-cols-2 gap-4">
-                        <label class="flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer hover:bg-emerald-50 transition border-emerald-500 bg-emerald-50" id="label-office">
-                            <input type="radio" name="type" value="office" class="hidden" checked onchange="handleTypeChange()">
-                            <span class="text-sm font-medium">Geschäftsstelle</span>
-                        </label>
-                        <label class="flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer hover:bg-emerald-50 transition border-gray-200" id="label-pickup">
-                            <input type="radio" name="type" value="pickup" class="hidden" onchange="handleTypeChange()">
-                            <span class="text-sm font-medium">Abholung</span>
-                        </label>
-                    </div>
+
+            <div id="success-card" class="hidden max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-10 text-center border-t-8 border-emerald-500">
+                <div class="mb-4 inline-flex items-center justify-center w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                    </svg>
                 </div>
-
-                <div id="addressBox" class="hidden space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
-                    <p class="text-xs font-bold text-emerald-700 uppercase">Abholadresse</p>
-                    <input type="text" id="street" placeholder="Straße & Hausnummer" class="w-full border-gray-300 rounded-lg p-2.5 focus:ring-emerald-500 focus:border-emerald-500 border">
-                    <input type="text" id="plz" placeholder="Postleitzahl (z.B. 12345)" class="w-full border-gray-300 rounded-lg p-2.5 focus:ring-emerald-500 focus:border-emerald-500 border">
-                </div>
-
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1 text">Was spenden Sie?</label>
-                        <input type="text" id="clothes" placeholder="z.B. 2 Sack Winterkleidung" class="w-full border-gray-300 rounded-lg p-2.5 border focus:ring-emerald-500 focus:border-emerald-500" required>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Krisenregion wählen</label>
-                        <select id="crisis" class="w-full border-gray-300 rounded-lg p-2.5 border focus:ring-emerald-500 focus:border-emerald-500">
-                            <option>Deutschland, Berlin (Stromausfallhilfe)</option>
-                            <option>Kosovo (Überschwemmungshilfe)</option>
-                            <option>Nordsyrien (Erdbebenhilfe)</option>
-                            <option>Süd-Sudan (Dürrehilfe)</option>
-                            <option>Ukraine (Kältehilfe)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <button type="button" onclick="processRegistration()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition duration-200 transform hover:-translate-y-0.5">
-                    Registrierung abschließen
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Vielen Dank!</h2>
+                <p class="text-gray-500 mb-8">Ihre Registrierung wurde erfolgreich gespeichert.</p>
+                <div id="result-details" class="bg-emerald-50 rounded-xl p-6 text-left space-y-3 border border-emerald-100"></div>
+                <button onclick="location.reload()" class="mt-8 text-emerald-600 font-semibold hover:text-emerald-800">
+                    &larr; Neue Registrierung starten
                 </button>
-            </form>
+            </div>
         </div>
 
-        <div id="success-card" class="hidden max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-10 text-center border-t-8 border-emerald-500">
-            <div class="mb-4 inline-flex items-center justify-center w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                </svg>
-            </div>
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">Vielen Dank!</h2>
-            <p class="text-gray-500 mb-8">Ihre Registrierung wurde erfolgreich gespeichert.</p>
+        <div id="crisis-page" class="hidden">
+            <h2 class="text-3xl font-bold text-center mb-10 text-emerald-800">Aktuelle Krisengebiete</h2>
             
-            <div id="result-details" class="bg-emerald-50 rounded-xl p-6 text-left space-y-3 border border-emerald-100">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
+                    <div class="h-48 bg-gray-200 flex items-center justify-center text-gray-400">
+                        <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl mb-2">Deutschland (Berlin)</h3>
+                        <p class="text-gray-600 text-sm">Nach einem großflächigen Stromausfall im Winter benötigen viele Haushalte dringend warme Decken und dicke Kleidung, um die kalten Nächte zu überstehen.</p>
+                    </div>
                 </div>
 
-            <button onclick="location.reload()" class="mt-8 text-emerald-600 font-semibold hover:text-emerald-800">
-                &larr; Neue Registrierung starten
-            </button>
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
+                    <div class="h-48 bg-gray-200 flex items-center justify-center text-gray-400">
+                        <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl mb-2">Ukraine</h3>
+                        <p class="text-gray-600 text-sm">Die andauernde Kältewelle und zerstörte Infrastruktur machen Winterkleidung lebensnotwendig. Wir sammeln Thermokleidung, Mäntel und Stiefel.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
+                    <div class="h-48 bg-gray-200 flex items-center justify-center text-gray-400">
+                        <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl mb-2">Nordsyrien</h3>
+                        <p class="text-gray-600 text-sm">Nach den schweren Erdbeben sind Millionen Menschen obdachlos. Kleiderspenden helfen den Betroffenen, sich gegen die Witterung zu schützen.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
+                    <div class="h-48 bg-gray-200 flex items-center justify-center text-gray-400">
+                        <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl mb-2">Kosovo</h3>
+                        <p class="text-gray-600 text-sm">Schwere Überschwemmungen haben ganze Landstriche verwüstet. Kleidung und Textilien wurden in den Schlammmassen unbrauchbar.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
+                    <div class="h-48 bg-gray-200 flex items-center justify-center text-gray-400">
+                        <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl mb-2">Süd-Sudan</h3>
+                        <p class="text-gray-600 text-sm">Extreme Dürreperioden zwingen Menschen zur Flucht. Leichte, schützende Kleidung wird für die Menschen in den Flüchtlingslagern benötigt.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12 text-center">
+                <button onclick="showPage('portal')" class="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-emerald-700 transition">
+                    Jetzt Spende registrieren
+                </button>
+            </div>
         </div>
     </main>
 
@@ -109,11 +170,22 @@
     </footer>
 
     <script>
+        // NAVIGATION LOGIK
+        function showPage(pageId) {
+            if(pageId === 'portal') {
+                document.getElementById('portal-page').classList.remove('hidden');
+                document.getElementById('crisis-page').classList.add('hidden');
+            } else if(pageId === 'crisis') {
+                document.getElementById('portal-page').classList.add('hidden');
+                document.getElementById('crisis-page').classList.remove('hidden');
+                window.scrollTo(0,0);
+            }
+        }
+
         function handleTypeChange() {
             const isPickup = document.querySelector('input[name="type"]:checked').value === 'pickup';
             document.getElementById('addressBox').classList.toggle('hidden', !isPickup);
             
-            // Optisches Feedback der Buttons
             document.getElementById('label-pickup').classList.toggle('border-emerald-500', isPickup);
             document.getElementById('label-pickup').classList.toggle('bg-emerald-50', isPickup);
             document.getElementById('label-office').classList.toggle('border-emerald-500', !isPickup);
@@ -125,11 +197,10 @@
             const clothes = document.getElementById('clothes').value;
             const crisis = document.getElementById('crisis').value;
             const plz = document.getElementById('plz').value;
-            const officePLZPrefix = "12"; // Die "Nähe" Definition laut Aufgabe (h)
+            const officePLZPrefix = "12";
 
             if(!clothes) { alert("Bitte geben Sie die Art der Kleidung an."); return; }
 
-            // Prüfung Anforderung (h)
             if (typeValue === 'pickup') {
                 if (!plz.startsWith(officePLZPrefix)) {
                     alert("Abholung nicht möglich: Die PLZ muss für unseren Abholservice mit " + officePLZPrefix + " beginnen.");
@@ -137,7 +208,6 @@
                 }
             }
 
-            // Erfolgseite anzeigen (Anforderung i)
             document.getElementById('form-card').classList.add('hidden');
             document.getElementById('success-card').classList.remove('hidden');
 
@@ -155,7 +225,3 @@
     </script>
 </body>
 </html>
-
-
-
-
